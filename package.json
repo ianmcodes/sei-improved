@@ -6,6 +6,10 @@
     "name": "Ian McCall",
     "email": "imccall@where2getit.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dapuck/sei-improved.git"
+  },
   "version": "0.0.1",
   "bin": "./testrunner.js",
   "dependencies": {
@@ -13,5 +17,9 @@
     "glob": "*",
     "optimist": "*",
     "underscore": "*"
-  }
+  },
+  "engines": {
+    "node": ">=0.10.1"
+  },
+  "preferGlobal": true
 }
