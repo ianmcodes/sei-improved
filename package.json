@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "name": "sei-improved",
+  "description": "Wrapper around se-interpreter that allows you to override configuration options and some parts of the test scripts",
+  "author": {
+    "name": "Ian McCall",
+    "email": "imccall@where2getit.com"
+  },
+  "version": "0.0.1",
+  "bin": "./testrunner.js",
+  "dependencies": {
+    "se-interpreter": "*",
+    "glob": "*",
+    "optimist": "*",
+    "underscore": "*"
+  }
+}
