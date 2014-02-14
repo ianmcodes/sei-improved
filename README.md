@@ -1,7 +1,7 @@
 A Wrapper Around se-interpreter
 ===============================
 
-`npm install -g se-interpreter`
+`npm install -g sei-improved`
 
 The configuration file for this is almost exactly the same as for se-interpreter. In fact, it will run se-interpreter configs with un-modified. 
 
