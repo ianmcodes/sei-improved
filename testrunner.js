@@ -11,6 +11,7 @@ var glob = require('glob');
 var _ = require('underscore');
 var argv = require('optimist').demand(1).usage('WTF').argv;
 var colors = require('colors');
+var util = require('util');
 //////////////////////////////////
 //////////////////////////////////
 var override_settings = {
@@ -20,6 +21,50 @@ var override_settings = {
 var listenerOptions = {};
 var configurations = [];
 //////////////////////////////////
+
+/**************************************************
+ * This is the same listener generator that is in *
+ * se-interpreter, except that it uses the colors *
+ * module. I am doing this because the way the    *
+ * SGR params are set by se-interpreter sometimes *
+ * breaks PuTTY.                                  *
+ **************************************************/
+function getInterpreterListener(testRun) {
+  return {
+    'startTestRun': function(testRun, info) {
+      if (info.success) {
+        console.log(testRun.name + (": Starting test " + testRun.name).green);
+      } else {
+        console.log(testRun.name + (": Unable to start test " + testRun.name + ": " + util.inspect(info.error)).red);
+      }
+    },
+    'endTestRun': function(testRun, info) {
+      if (info.success) {
+        console.log(testRun.name + ": Test passed".bold.green);
+      } else {
+        if (info.error) {
+          console.log(testRun.name + (": Test failed: " + util.inspect(info.error)).bold.red);
+        } else {
+          console.log(testRun.name + ": Test failed".bold.red);
+        }
+      }
+    },
+    'startStep': function(testRun, step) {
+      console.log(testRun.name + ": " + JSON.stringify(step));
+    },
+    'endStep': function(testRun, step, info) {
+      if (info.success) {
+        console.log(testRun.name + ": Success".green);
+      } else {
+        if (info.error) {
+          console.log(testRun.name + (": " + util.inspect(info.error)).red);
+        } else {
+          console.log(testRun.name + ": Failed".yellow);
+        }
+      }
+    }
+  };
+}
 
 // Iterate over argv keys and add to override_settings.
 for (var key in argv) {
@@ -71,7 +116,7 @@ argv._.forEach(function(path2glob) {
 						// debugger;
 						if ( typeof script === 'string') {
 							glob.sync(script).forEach(function(s) {
-								var tr = se.createTestRun(s, (argv.noPrint || argv.silent), se.getInterpreterListener, null, setting.browserOptions, setting.driverOptions, listenerOptions);
+								var tr = se.createTestRun(s, (argv.noPrint || argv.silent), getInterpreterListener, null, setting.browserOptions, setting.driverOptions, listenerOptions);
 								configurations.push(tr);
 							});
 						}// Else If obj then
@@ -103,7 +148,7 @@ argv._.forEach(function(path2glob) {
 									tr.browserOptions = setting.browserOptions;
 									tr.driverOptions = setting.driverOptions;
 									tr.silencePrints = argv.noPrint || argv.silent;
-									tr.listener = se.getInterpreterListener(tr, listenerOptions);
+									tr.listener = getInterpreterListener(tr, listenerOptions);
 									configurations.push(tr);
 								});
 							}
